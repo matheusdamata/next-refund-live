@@ -14,15 +14,28 @@ type OrderCardProps = {
 export default function OrderCard({ order }: OrderCardProps) {
   const [isLoading, setIsLoading] = useState(false)
 
-  async function handleSubmit() {
+  async function handleRefund() {
     setIsLoading(true)
 
-    await new Promise((resolve) =>
-      setTimeout(() => {
-        setIsLoading(false)
-        resolve(true)
-      }, 1500),
-    )
+    const data = {
+      order_id: order.id,
+    }
+
+    try {
+      const res = await fetch('/api/refund', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      console.log('$ res', await res.json())
+    } catch (error) {
+      console.log('$ erro:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -49,7 +62,7 @@ export default function OrderCard({ order }: OrderCardProps) {
           </div>
         </div>
 
-        <Button isLoading={isLoading} onClick={handleSubmit}>
+        <Button isLoading={isLoading} onClick={handleRefund}>
           Reembolsar
         </Button>
       </CardContent>
