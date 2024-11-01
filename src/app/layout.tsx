@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { poppins } from '@/lib/font'
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -16,6 +17,8 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${poppins.className} antialiased px-4 min-mobile:px-0`}>
         {children}
+
+        <Toaster />
       </body>
     </html>
   )

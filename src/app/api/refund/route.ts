@@ -1,5 +1,6 @@
 import { refundBodySchema } from '@/schemas/refund'
-import { RefundUseCase } from '@/server/use-cases/refund'
+import { DoesNotExists } from '@/server/use-cases/errors/does-not-exists'
+import { makeRefundUseCase } from '@/server/use-cases/factories/make-refund-use-case'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
       },
     )
 
-  const refundUseCase = new RefundUseCase()
+  const refundUseCase = makeRefundUseCase()
 
   try {
     await refundUseCase.execute({ order_id: data.order_id })
@@ -30,6 +31,15 @@ export async function POST(req: Request) {
     )
   } catch (error) {
     console.log('$ erro:', error)
+    if (error instanceof DoesNotExists)
+      return NextResponse.json(
+        {
+          message: 'Pedido não encontrado!',
+        },
+        {
+          status: 404,
+        },
+      )
 
     return NextResponse.json(
       {

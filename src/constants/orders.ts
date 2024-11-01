@@ -14,6 +14,3 @@ export const orders = [
     image_url: '/images/orders/salada.jpg',
   },
 ]
-
-type Order = (typeof orders)[number]
-export type OrderProps = Order

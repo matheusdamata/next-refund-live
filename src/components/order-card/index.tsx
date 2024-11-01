@@ -4,14 +4,17 @@ import { formatPrice } from '@/utils/format-price'
 import { useState } from 'react'
 import { Button } from '../ui/button'
 import { Card, CardHeader, CardContent } from '../ui/card'
-import type { OrderProps } from '@/constants/orders'
 import Image from 'next/image'
+import type { OrderProps } from '@/@types/order'
+import { useToast } from '@/hooks/use-toast'
 
 type OrderCardProps = {
   order: OrderProps
 }
 
 export default function OrderCard({ order }: OrderCardProps) {
+  const { toast } = useToast()
+
   const [isLoading, setIsLoading] = useState(false)
 
   async function handleRefund() {
@@ -30,9 +33,33 @@ export default function OrderCard({ order }: OrderCardProps) {
         body: JSON.stringify(data),
       })
 
-      console.log('$ res', await res.json())
+      const isError = res.status !== 200
+      const response: { message: string } = await res.json()
+
+      if (isError) {
+        if (response.message.includes('Pedido não encontrado')) {
+          setIsLoading(false)
+
+          return toast({
+            title: 'Pedido não encontrado',
+            description: 'Verifique seu pedido e, tente novamente.',
+            variant: 'destructive',
+          })
+        }
+      }
+
+      toast({
+        title: 'Pedido reembolsado',
+        description: 'Em breve você receberá um e-mail de confirmação!',
+      })
     } catch (error) {
       console.log('$ erro:', error)
+
+      toast({
+        title: 'Ops! Ocorreu um erro',
+        description: 'Tente novamente mais tarde.',
+        variant: 'destructive',
+      })
     } finally {
       setIsLoading(false)
     }
