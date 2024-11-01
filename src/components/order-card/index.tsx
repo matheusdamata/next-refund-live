@@ -27,7 +27,9 @@ export default function OrderCard({ order }: OrderCardProps) {
 
   return (
     <Card key={order.id}>
-      <CardHeader>Pedido #{order.order_number}</CardHeader>
+      <CardHeader className="font-semibold">
+        Pedido #{order.order_number}
+      </CardHeader>
       <CardContent className="flex flex-col gap-4 justify-between">
         <div className="flex flex-row gap-4">
           <div className="w-[50px] h-[50px] rounded-lg overflow-hidden">
